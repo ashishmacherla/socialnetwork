@@ -19,8 +19,8 @@ public class UserManagementController {
     private UserService userService;
 
     @PostMapping("/add")
-    public UserDTO addUser(@RequestBody UserDTO userDTO) throws UserException {
-        return userService.addUser(userDTO);
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) throws UserException {
+        return ResponseEntity.accepted().body(userService.addUser(userDTO));
     }
 
     @DeleteMapping("remove/{userId}")
@@ -30,12 +30,12 @@ public class UserManagementController {
     }
 
     @GetMapping("getBy/id/{userId}")
-    public UserDTO getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping("/listAllUsers")
-    public List<UserDTO> listUsers() {
-        return userService.listUsers();
+    public ResponseEntity<List<UserDTO>> listUsers() {
+        return ResponseEntity.ok(userService.listUsers());
     }
 }

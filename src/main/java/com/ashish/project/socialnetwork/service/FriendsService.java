@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +39,7 @@ public class FriendsService {
         int exists = friendsRepository.isExistsByUsers1AndUsers2(userId1, userId2);
 
         if (exists >=1) {
-            throw new IllegalStateException("Friendship already exists between " + userId1 + " and " + userId2);
+            throw new FriendshipException(String.format("Friendship already exists between %s and %s", userId1, userId2),"400");
         }
 
         Friendship friendship = new Friendship();
@@ -48,23 +49,21 @@ public class FriendsService {
     }
 
     public void removeFriendship(Long userId1, Long userId2) {
-        Users users1 = userRepository.findById(userId1).orElseThrow();
-        Users users2 = userRepository.findById(userId2).orElseThrow();
+        List<Long> friendshipIds = friendsRepository.getAllFriendsForUserId1AndUserId2(userId1, userId2);
 
-        users1.getFriendships().remove(users2);
-        users2.getFriendships().remove(users1);
-
-        userRepository.save(users1);
-        userRepository.save(users2);
+        if(friendshipIds ==null || friendshipIds.size() == 0) {
+            throw new FriendshipException(String.format("No Friendship exists between userId1:%s and userId2:%s", userId1,userId2), "400");
+        }
+        friendsRepository.deleteAllById(friendshipIds);
     }
 
-    public Set<UserDTO> listFriends(Long userId) {
+    public List<UserDTO> listFriends(Long userId) {
         List<Users> users = friendsRepository.getAllFriendsForUserId(userId);
         if(users != null && users.size() ==0) throw new FriendshipException(String.format("No friends found for passed-in userId:%s", userId), "404");
 
-        Map<Long, Users> friendsUsersMap = new HashMap<>();
-        users.parallelStream()
-                .flatMap(user -> user.getFriendships().stream())
+        Map<Long, Users> friendsUsersMap = new ConcurrentHashMap<>();
+        users.stream()
+                .flatMap(user -> user.getFriendships().parallelStream())
                 .forEach(friendship -> {
                         Users user1 = friendship.getUsers1();
                         Long user1Id = user1.getId();
@@ -79,6 +78,7 @@ public class FriendsService {
                         }
 
         });
-        return friendsUsersMap.values().stream().map(Mapper::toDto).collect(Collectors.toSet());
+
+        return friendsUsersMap.values().parallelStream().map(Mapper::toDto).collect(Collectors.toList());
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ashish.project.socialnetwork.Constants.BAD_REQUEST_ERROR_CODE;
 import static com.ashish.project.socialnetwork.Constants.NOT_FOUND_ERROR_CODE;
 
 @Service
@@ -26,7 +27,7 @@ public class UserService {
         userDTO.setId(null);
         String email = userDTO.getEmail();
         Optional<String> currentUseremail = userRepository.findByEmail(email);
-        if(currentUseremail.isPresent()) throw new UserException(String.format("Passed in User with user email:%s already exists in DB. Duplicate request",email), NOT_FOUND_ERROR_CODE);
+        if(currentUseremail.isPresent()) throw new UserException(String.format("Passed in User with user email:%s already exists in DB. Duplicate request",email), BAD_REQUEST_ERROR_CODE);
         return Mapper.toDto(userRepository.save(Mapper.toEntity(userDTO)));
     }
 
