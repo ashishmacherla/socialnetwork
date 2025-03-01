@@ -11,11 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,24 +57,8 @@ public class FriendsService {
         List<Users> users = friendsRepository.getAllFriendsForUserId(userId);
         if(users != null && users.size() ==0) throw new FriendshipException(String.format("No friends found for passed-in userId:%s", userId), "404");
 
-        Map<Long, Users> friendsUsersMap = new ConcurrentHashMap<>();
-        users.stream()
-                .flatMap(user -> user.getFriendships().parallelStream())
-                .forEach(friendship -> {
-                        Users user1 = friendship.getUsers1();
-                        Long user1Id = user1.getId();
-                        Users user2 = friendship.getUsers2();
-                        Long user2Id = user2.getId();
-                        if(!friendsUsersMap.containsKey(user1Id) && !user1Id.equals(userId)) {
-                            friendsUsersMap.put(user1Id, user1);
-                        }
-
-                        if(!friendsUsersMap.containsKey(user2Id) && !user2Id.equals(userId)) {
-                            friendsUsersMap.put(user2Id, user2);
-                        }
-
-        });
-
-        return friendsUsersMap.values().parallelStream().map(Mapper::toDto).collect(Collectors.toList());
+        return users.parallelStream()
+                .map(Mapper::toDto)
+                .collect(Collectors.toList());
     }
 }

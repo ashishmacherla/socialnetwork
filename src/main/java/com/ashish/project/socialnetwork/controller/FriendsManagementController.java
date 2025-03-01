@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/friendshipManagement")
@@ -32,7 +31,7 @@ public class FriendsManagementController {
     }
 
     @GetMapping("listAllFrienshipsOfUser/id/{userId}")
-    public List<UserDTO> listFriends(@PathVariable Long userId) {
-        return friendsService.listFriends(userId);
+    public ResponseEntity<List<UserDTO>> listFriends(@PathVariable Long userId) {
+        return ResponseEntity.ok(friendsService.listFriends(userId));
     }
 }

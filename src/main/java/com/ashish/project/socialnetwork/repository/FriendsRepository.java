@@ -18,7 +18,7 @@ public interface FriendsRepository extends CrudRepository<Friendship, Long> {
 
 @Query("SELECT u FROM Users u WHERE u.id IN " +
         "(SELECT f.users2.id FROM Friendship f WHERE f.users1.id = :userId" +
-        " UNION ALL " +
+        " UNION " +
         "SELECT f.users1.id FROM Friendship f WHERE f.users2.id = :userId)")
     List<Users> getAllFriendsForUserId(@Param("userId") Long userId);
 
