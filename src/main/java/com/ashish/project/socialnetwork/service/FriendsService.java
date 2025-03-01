@@ -3,16 +3,18 @@ package com.ashish.project.socialnetwork.service;
 import com.ashish.project.socialnetwork.dto.UserDTO;
 import com.ashish.project.socialnetwork.exception.model.FriendshipException;
 import com.ashish.project.socialnetwork.mapper.Mapper;
-import com.ashish.project.socialnetwork.repository.Friendship;
-import com.ashish.project.socialnetwork.repository.Users;
 import com.ashish.project.socialnetwork.repository.FriendsRepository;
+import com.ashish.project.socialnetwork.repository.Friendship;
 import com.ashish.project.socialnetwork.repository.UserRepository;
+import com.ashish.project.socialnetwork.repository.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,17 +41,10 @@ public class FriendsService {
             throw new IllegalStateException("Friendship already exists between " + userId1 + " and " + userId2);
         }
 
-        // Create and save a new friendship
         Friendship friendship = new Friendship();
         friendship.setUsers1(users1);
         friendship.setUsers2(users2);
         friendsRepository.save(friendship);
-
-//        users1.getFriendships().add(friendship);
-//        users2.getFriendships().add(friendship);
-
-//        userRepository.save(users1);
-//        userRepository.save(users2);
     }
 
     public void removeFriendship(Long userId1, Long userId2) {
@@ -65,10 +60,11 @@ public class FriendsService {
 
     public Set<UserDTO> listFriends(Long userId) {
         List<Users> users = friendsRepository.getAllFriendsForUserId(userId);
+        if(users != null && users.size() ==0) throw new FriendshipException(String.format("No friends found for passed-in userId:%s", userId), "404");
+
         Map<Long, Users> friendsUsersMap = new HashMap<>();
         users.parallelStream()
                 .flatMap(user -> user.getFriendships().stream())
-               // .flatMap(friendship -> friendship.getUsers2())
                 .forEach(friendship -> {
                         Users user1 = friendship.getUsers1();
                         Long user1Id = user1.getId();
@@ -83,8 +79,6 @@ public class FriendsService {
                         }
 
         });
-        return friendsUsersMap.values().stream().map(users1 -> {
-            return Mapper.toDto(users1);
-        }).collect(Collectors.toSet());
+        return friendsUsersMap.values().stream().map(Mapper::toDto).collect(Collectors.toSet());
     }
 }

@@ -1,7 +1,6 @@
 package com.ashish.project.socialnetwork.controller;
 
 import com.ashish.project.socialnetwork.dto.UserDTO;
-import com.ashish.project.socialnetwork.repository.Users;
 import com.ashish.project.socialnetwork.service.FriendsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class FriendsManagementController {
         friendsService.removeFriendship(userId1, userId2);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("listAllOfUser/{userId}")
     public Set<UserDTO> listFriends(@PathVariable Long userId) {
         return friendsService.listFriends(userId);
     }

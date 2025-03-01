@@ -1,8 +1,6 @@
 package com.ashish.project.socialnetwork.mapper;
 
-import com.ashish.project.socialnetwork.dto.FriendshipDTO;
 import com.ashish.project.socialnetwork.dto.UserDTO;
-import com.ashish.project.socialnetwork.repository.Friendship;
 import com.ashish.project.socialnetwork.repository.Users;
 
 public class Mapper {

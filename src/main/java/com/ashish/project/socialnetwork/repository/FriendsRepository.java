@@ -16,9 +16,6 @@ public interface FriendsRepository extends CrudRepository<Friendship, Long> {
     int isExistsByUsers1AndUsers2(Long userId1, Long userId2);
 
 
-//    @Query("SELECT u FROM Users u " +
-//            "JOIN Friendship f ON (f.users1.id = u.id OR f.users2.id = u.id) " +
-//            "WHERE u.id = :userId1")
 @Query("SELECT u FROM Users u WHERE u.id IN " +
         "(SELECT f.users2.id FROM Friendship f WHERE f.users1.id = :userId" +
         " UNION ALL " +

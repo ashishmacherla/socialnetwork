@@ -17,4 +17,12 @@ public class GobalExceptionalHandler {
             return ResponseEntity.internalServerError().body(ex.getMessage());
     }
 
+    @ExceptionHandler(FriendshipException.class)
+    public ResponseEntity<String> FriendshipException(FriendshipException ex) {
+        if(ex.getCode().equals(NOT_FOUND_ERROR_CODE))
+            return ResponseEntity.ok().body(ex.getMessage()); // Returns 404 with error message
+        else
+            return ResponseEntity.internalServerError().body(ex.getMessage());
+    }
+
 }
