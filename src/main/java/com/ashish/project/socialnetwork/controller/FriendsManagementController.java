@@ -1,5 +1,6 @@
 package com.ashish.project.socialnetwork.controller;
 
+import com.ashish.project.socialnetwork.dto.UserDTO;
 import com.ashish.project.socialnetwork.repository.Users;
 import com.ashish.project.socialnetwork.service.FriendsService;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +17,18 @@ public class FriendsManagementController {
     @Autowired
     private FriendsService friendsService;
 
-    @PostMapping("/{userId1}/{userId2}")
-    public void createFriendship(@PathVariable String userId1, @PathVariable String userId2) {
+    @PostMapping("create/{userId1}/{userId2}")
+    public void createFriendship(@PathVariable Long userId1, @PathVariable Long userId2) {
         friendsService.createFriendship(userId1, userId2);
     }
 
-    @DeleteMapping("/{userId1}/{userId2}")
-    public void removeFriendship(@PathVariable String userId1, @PathVariable String userId2) {
+    @DeleteMapping("remove/{userId1}/{userId2}")
+    public void removeFriendship(@PathVariable Long userId1, @PathVariable Long userId2) {
         friendsService.removeFriendship(userId1, userId2);
     }
 
     @GetMapping("/{userId}")
-    public Set<Users> listFriends(@PathVariable String userId) {
+    public Set<UserDTO> listFriends(@PathVariable Long userId) {
         return friendsService.listFriends(userId);
     }
 }

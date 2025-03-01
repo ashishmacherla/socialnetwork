@@ -1,5 +1,6 @@
 package com.ashish.project.socialnetwork.controller;
 
+import com.ashish.project.socialnetwork.dto.UserDTO;
 import com.ashish.project.socialnetwork.repository.Users;
 import com.ashish.project.socialnetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,22 @@ public class UserManagementController {
     private UserService userService;
 
     @PostMapping
-    public Users addUser(@RequestBody Users users) {
-        return userService.addUser(users);
+    public UserDTO addUser(@RequestBody UserDTO userDTO) {
+        return userService.addUser(userDTO);
     }
 
     @DeleteMapping("/{userId}")
-    public void removeUser(@PathVariable String userId) {
+    public void removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
     }
 
-    @GetMapping
-    public List<Users> listUsers() {
+    @GetMapping("/id/{userId}")
+    public UserDTO getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @GetMapping("/listAllUsers")
+    public List<UserDTO> listUsers() {
         return userService.listUsers();
     }
 }

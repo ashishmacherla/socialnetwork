@@ -8,7 +8,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
