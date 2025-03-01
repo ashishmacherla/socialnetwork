@@ -27,10 +27,4 @@ public interface FriendsRepository extends CrudRepository<Friendship, Long> {
             "OR (f.users1.id = :userId2 AND f.users2.id = :userId1)"
            )
     List<Long> getAllFriendsForUserId1AndUserId2(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
-
-    @Query("DELETE FROM Friendship f WHERE " +
-            "(f.users1.id = :userId1 AND f.users2.id = :userId2) " +
-            "OR (f.users1.id = :userId2 AND f.users2.id = :userId1)"
-    )
-    void deleteFriendShipBetweenUserId1AndUserId2(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 }
