@@ -17,8 +17,10 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "users1", cascade = CascadeType.ALL, orphanRemoval = true)

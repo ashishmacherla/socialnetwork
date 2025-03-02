@@ -8,6 +8,8 @@ import com.ashish.project.socialnetwork.repository.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,15 @@ public class UserService {
         String email = userDTO.getEmail();
         Optional<String> currentUseremail = userRepository.findByEmail(email);
         if(currentUseremail.isPresent()) throw new UserException(String.format("Passed in User with user email:%s already exists in DB. Duplicate request",email), BAD_REQUEST_ERROR_CODE);
+        return Mapper.toDto(userRepository.save(Mapper.toEntity(userDTO)));
+    }
+
+    public UserDTO updateUser(UserDTO userDTO) throws UserException {
+        Long userId = userDTO.getId();
+        if(userId == null || userId == 0) throw new UserException("Id attribute cannot be null or 0", "400");
+
+        Optional<Users> currentUseremail = userRepository.findById(userId);
+        if(!currentUseremail.isPresent()) throw new UserException(String.format("Passed in User with userId:%s doesn't exists in DB.",userId), BAD_REQUEST_ERROR_CODE);
         return Mapper.toDto(userRepository.save(Mapper.toEntity(userDTO)));
     }
 
