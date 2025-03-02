@@ -30,20 +30,20 @@ public class UserManagementController {
         return ResponseEntity.accepted().body(userService.addUser(userDTO));
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws UserException {
         customRequestValidator(userDTO);
         return ResponseEntity.ok().body(userService.updateUser(userDTO));
     }
 
 
-    @DeleteMapping("remove/id/{userId}")
+    @DeleteMapping("/remove/id/{userId}")
     public ResponseEntity<String> removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
         return ResponseEntity.ok(String.format("UserId:%s deleted successfully", userId));
     }
 
-    @GetMapping("getBy/id/{userId}")
+    @GetMapping("/getBy/id/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
